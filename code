@@ -1,0 +1,36 @@
+# Load necessary libraries
+library(ggplot2)
+library(gganimate)
+library(lubridate)  # For handling date-time data
+
+# Create a simulated telemetry dataset
+set.seed(123)
+n <- 200  # Number of data points
+timestamps <- seq(ymd_hms("2024-01-01 00:00:00"), by = "min", length.out = n)
+sensor_readings <- sin(seq(1, n) / 10) + rnorm(n)  # Simulated sensor readings with noise
+
+# Create a dataframe
+telemetry_data <- data.frame(
+  timestamp = timestamps,
+  sensor_reading = sensor_readings
+)
+
+
+# Scatter plot
+ggplot(telemetry_data, aes(x = timestamp, y = sensor_reading)) +
+  geom_point() +
+  labs(title = "Scatter Plot of Sensor Readings Over Time", x = "Timestamp", y = "Sensor Reading") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Time-lapse animation
+anim <- ggplot(telemetry_data, aes(x = timestamp, y = sensor_reading)) +
+  geom_point() +
+  labs(title = "Time-Lapse Animation of Sensor Readings", x = "Timestamp", y = "Sensor Reading") +
+  theme_minimal() +
+  transition_reveal(timestamp) +  # Animate by revealing data over time
+  ease_aes('linear')
+
+# Save the animation
+anim_save("time_lapse_telemetry_animation.gif", anim)
+
